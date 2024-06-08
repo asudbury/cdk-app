@@ -38,7 +38,7 @@ jobs:
         run: cdk bootstrap
 
       - name: Destroy CDK Stack
-        run: cdk deploy --require-approval never --account ${{ process.env.AWS_ACCOUNT_ID }} --region ${{ secrets.AWS_DEFAULT_REGION }}
+        run: cdk deploy --require-approval never --account ${{ secrets.AWS_ACCOUNT_ID }} --region ${{ secrets.AWS_DEFAULT_REGION }}
 
       - name: Post-deployment steps
         run: echo "Destroy complete"
