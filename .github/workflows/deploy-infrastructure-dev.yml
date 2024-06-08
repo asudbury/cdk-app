@@ -1,0 +1,43 @@
+name: Deploy AWS Infrastructure for development branches
+
+on:
+  push:
+    branches:
+        - main
+        - dev
+        - 'task/*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install AWS CDK
+        run: npm install -g aws-cdk
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+          aws-region:  ${{ process.env.AWS_DEFAULT_REGION }}
+
+      - name: Bootstrap CDK
+        run: cdk bootstrap
+
+      - name: Destroy CDK Stack
+        run: cdk deploy --require-approval never --account ${{ process.env.AWS_ACCOUNT_ID }} --region ${{ process.env.AWS_DEFAULT_REGION }}
+
+      - name: Post-deployment steps
+        run: echo "Destroy complete"
