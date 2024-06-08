@@ -3,6 +3,7 @@ name: Deploy AWS Infrastructure for development branches
 on:
   push:
     branches:
+        - master
         - main
         - dev
         - 'task/*'
